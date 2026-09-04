@@ -1,0 +1,61 @@
+# ═══════════════════════════════════════════════════════════════
+# Render.com Blueprint — 1-click deploy for Khang Backend
+# ═══════════════════════════════════════════════════════════════
+#
+# HOW TO USE:
+#   1. Push this repo to GitHub
+#   2. Go to https://render.com/deploy (or dashboard → New → Blueprint)
+#   3. Connect your GitHub repo
+#   4. Render auto-detects this file and creates the service
+#   5. Fill in the environment variables when prompted
+#
+# ═══════════════════════════════════════════════════════════════
+
+services:
+  - type: web
+    name: khang-backend
+    runtime: node
+    region: singapore # closest to India — change if needed
+    plan: free # or "starter" ($7/mo) for always-on
+    rootDir: backend # ⚠ IMPORTANT — backend/ folder inside the repo
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /health
+    autoDeploy: true # auto-deploy on git push
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 5000
+
+      - key: CLIENT_URL
+        value: https://khang.vercel.app
+        # ⚠ Update this to your actual Vercel URL after frontend deploy
+
+      # Auto-generated
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+
+      # ─── Set these manually in Render Dashboard ────────────
+      # Database
+      - key: MONGO_URI
+        sync: false # ← from MongoDB Atlas
+
+      # Razorpay (get from https://dashboard.razorpay.com/app/keys)
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+      # Gmail (Nodemailer with App Password)
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+
+      # Restaurant notification email
+      - key: RESTAURANT_EMAIL
+        value: sultham456@gmail.com
